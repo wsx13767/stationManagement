@@ -36,7 +36,7 @@ public class StationController {
         Optional<Station> stationOptional = stationRepository.findByName(stationInfo.getName());
 
         if (stationOptional.isPresent())
-            throw new RuntimeException("station已存在");
+            throw new RuntimeException("station名稱重複");
 
         Station station = new Station();
         station.setName(stationInfo.getName());
