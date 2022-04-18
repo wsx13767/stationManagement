@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -33,23 +34,8 @@ class StationControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
-    private StationRepository stationRepository;
-
-    @BeforeEach
-    public void before() {
-        Station station = new Station();
-        station.setId(1L);
-        station.setName("test");
-        station.setCreateTime(LocalDateTime.now());
-        station.setUpdateTime(LocalDateTime.now());
-
-        Mockito.when(stationRepository.findById(1L)).thenReturn(Optional.of(station));
-        Mockito.when(stationRepository.findById(2L)).thenReturn(Optional.empty());
-        Mockito.when(stationRepository.findByName("test")).thenReturn(Optional.of(station));
-        Mockito.when(stationRepository.findByName("test2")).thenReturn(Optional.empty());
-        Mockito.when(stationRepository.save(Mockito.any())).thenReturn(station);
-    }
+    @Autowired
+    private DataSource dataSource;
 
     @Test
     public void getStations() throws Exception {
@@ -79,7 +65,7 @@ class StationControllerTest {
 
     @Test
     public void getStation_id_not_exist() throws Exception {
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station/2");
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station/999");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400))
                 .andExpect(content().string("No value present"))
@@ -101,8 +87,8 @@ class StationControllerTest {
         mockMvc.perform(post("/station")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(info)))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.name", equalTo("test")))
+                .andExpect(jsonPath("$.id", equalTo(2)))
+                .andExpect(jsonPath("$.name", equalTo("test2")))
                 .andReturn();
     }
 
