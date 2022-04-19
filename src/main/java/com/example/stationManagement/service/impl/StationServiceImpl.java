@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +42,19 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
+    public List<Station> findAllById(Iterable<Long> ids) {
+        Iterable<Station> stations = stationRepository.findAllById(ids);
+        if (stations instanceof List)
+            return (List<Station>) stations;
+
+        List<Station> result = new ArrayList<>();
+        for (Station station : stations) {
+            result.add(station);
+        }
+        return result;
+    }
+
+    @Override
     public Station createStation(StationInfo stationInfo) {
         if (stationInfo == null) throw new RuntimeException("stationInfo不可為空");
         if (StringUtils.isBlank(stationInfo.getName())) throw new RuntimeException("name 不可為空");
@@ -50,7 +64,6 @@ public class StationServiceImpl implements StationService {
 
         Station station = new Station();
         station.setName(stationInfo.getName());
-
         return stationRepository.save(station);
     }
 
@@ -87,7 +100,7 @@ public class StationServiceImpl implements StationService {
         return nurseStationMappingRepository.findByStationId(stationId)
                 .stream().map(mapping -> {
                     NurseInfoOfStation info = new NurseInfoOfStation();
-                    info.setSno(mapping.getNurse().getSno());
+                    info.setId(mapping.getNurseId());
                     info.setName(mapping.getNurse().getName());
                     info.setJoinTime(mapping.getCreateTime());
                     return info;

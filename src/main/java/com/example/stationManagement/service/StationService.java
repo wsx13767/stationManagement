@@ -9,6 +9,7 @@ import java.util.List;
 public interface StationService {
     Iterable<Station> findAll();
     Station findById(Long id);
+    List<Station> findAllById(Iterable<Long> ids);
     Station createStation(StationInfo stationInfo);
     Station updateStation(Long id, StationInfo stationInfo);
     void deleteStationAndMapping(Long stationId);

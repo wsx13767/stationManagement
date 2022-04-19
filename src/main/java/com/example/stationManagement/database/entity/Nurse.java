@@ -1,20 +1,18 @@
 package com.example.stationManagement.database.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
 @Table
 public class Nurse {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column
-    private String sno;
 
     @Column
     private String name;
@@ -22,10 +20,6 @@ public class Nurse {
     @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createTime;
-
-    @UpdateTimestamp
-    @Column(name = "update_time")
-    private LocalDateTime updateTime;
 
     public Long getId() {
         return id;
@@ -50,21 +44,4 @@ public class Nurse {
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getSno() {
-        return sno;
-    }
-
-    public void setSno(String sno) {
-        this.sno = sno;
-    }
-
 }

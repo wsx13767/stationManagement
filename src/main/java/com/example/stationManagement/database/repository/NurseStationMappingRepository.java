@@ -12,7 +12,14 @@ public interface NurseStationMappingRepository extends CrudRepository<NurseStati
     @Query("select n from NurseStationMapping n where n.stationId = ?1")
     List<NurseStationMapping> findByStationId(Long stationId);
 
+    @Query("select n from NurseStationMapping n where n.nurseId = ?1")
+    List<NurseStationMapping> findByNurseId(Long nurseId);
+
     @Modifying
     @Query("delete from NurseStationMapping n where n.stationId = ?1")
     void deleteByStationId(Long stationId);
+
+    @Modifying
+    @Query("delete from NurseStationMapping n where n.nurseId = ?1")
+    void deleteByNurseId(Long nurseId);
 }
