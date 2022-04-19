@@ -14,10 +14,10 @@ import java.util.List;
 @RequestMapping("/station")
 @RestController
 @Validated
-public class StationController {
+public class StationInfoController {
     private StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationInfoController(StationService stationService) {
         this.stationService = stationService;
     }
 

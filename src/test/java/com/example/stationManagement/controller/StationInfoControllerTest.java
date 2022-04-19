@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-class StationControllerTest {
+class StationInfoControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
