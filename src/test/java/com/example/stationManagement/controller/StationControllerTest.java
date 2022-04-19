@@ -1,32 +1,26 @@
 package com.example.stationManagement.controller;
 
-import com.example.stationManagement.database.entity.Station;
-import com.example.stationManagement.database.repository.StationRepository;
 import com.example.stationManagement.model.StationInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.sql.DataSource;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 class StationControllerTest {
@@ -37,6 +31,7 @@ class StationControllerTest {
     @Autowired
     private DataSource dataSource;
 
+    @Order(1)
     @Test
     public void getStations() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station");
@@ -45,6 +40,7 @@ class StationControllerTest {
                 .andReturn();
     }
 
+    @Order(2)
     @Test
     public void getStation() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station/1");
@@ -55,6 +51,7 @@ class StationControllerTest {
                 .andReturn();
     }
 
+    @Order(3)
     @Test
     public void getStation_id_less_than_0() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station/-1");
@@ -63,6 +60,7 @@ class StationControllerTest {
                 .andReturn();
     }
 
+    @Order(4)
     @Test
     public void getStation_id_not_exist() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station/999");
@@ -72,6 +70,7 @@ class StationControllerTest {
                 .andReturn();
     }
 
+    @Order(5)
     @Test
     public void getStation_id_not_num() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station/a");
@@ -80,6 +79,7 @@ class StationControllerTest {
                 .andReturn();
     }
 
+    @Order(6)
     @Test
     public void createStation() throws Exception {
         StationInfo info = new StationInfo();
@@ -92,6 +92,7 @@ class StationControllerTest {
                 .andReturn();
     }
 
+    @Order(7)
     @Test
     public void createStation_dup() throws Exception {
         StationInfo info = new StationInfo();
@@ -101,6 +102,68 @@ class StationControllerTest {
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(info)))
                 .andExpect(status().is(400))
                 .andExpect(content().string("station名稱重複"))
+                .andReturn();
+    }
+
+    @Order(8)
+    @Test
+    public void updateStation() throws Exception {
+        StationInfo info = new StationInfo();
+        info.setName("test");
+        mockMvc.perform(post("/station/1")
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(info)))
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Order(9)
+    @Test
+    public void updateStation_success() throws Exception {
+        StationInfo info = new StationInfo();
+        info.setName("station1");
+        mockMvc.perform(put("/station/1")
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(info)))
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.name", equalTo("station1")))
+                .andExpect(jsonPath("$.createTime", notNullValue()))
+                .andExpect(jsonPath("$.updateTime", notNullValue()))
+                .andReturn();
+    }
+
+    @Order(10)
+    @Test
+    public void findNurseInfoByStationId() throws Exception {
+        mockMvc.perform(get("/station/1/nurses"))
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$[0].sno", equalTo("21103")))
+                .andExpect(jsonPath("$[0].name", equalTo("sion")))
+                .andExpect(jsonPath("$[0].joinTime", notNullValue()))
+                .andReturn();
+    }
+
+    @Order(11)
+    @Test
+    public void deleteStation_less_than_0() throws Exception {
+        mockMvc.perform(delete("/station/-1"))
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Order(12)
+    @Test
+    public void deleteStation_id_not_num() throws Exception {
+        mockMvc.perform(delete("/station/a"))
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Order(13)
+    @Test
+    public void deleteStation() throws Exception {
+        mockMvc.perform(delete("/station/1"))
+                .andExpect(status().is(200))
+                .andExpect(content().string("success"))
                 .andReturn();
     }
 
