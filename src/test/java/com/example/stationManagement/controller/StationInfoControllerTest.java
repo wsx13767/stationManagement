@@ -28,8 +28,6 @@ class StationInfoControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private DataSource dataSource;
 
     @Order(1)
     @Test
@@ -66,7 +64,7 @@ class StationInfoControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/station/999");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400))
-                .andExpect(content().string("No value present"))
+                .andExpect(jsonPath("$.message", equalTo("No value present")))
                 .andReturn();
     }
 
@@ -101,7 +99,7 @@ class StationInfoControllerTest {
         mockMvc.perform(post("/station")
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(info)))
                 .andExpect(status().is(400))
-                .andExpect(content().string("station名稱重複"))
+                .andExpect(jsonPath("$.message", equalTo("station名稱重複")))
                 .andReturn();
     }
 
@@ -110,7 +108,7 @@ class StationInfoControllerTest {
     public void updateStation() throws Exception {
         StationInfo info = new StationInfo();
         info.setName("test");
-        mockMvc.perform(post("/station/1")
+        mockMvc.perform(put("/station/1")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(info)))
                 .andExpect(status().is(400))
                 .andReturn();
@@ -136,7 +134,7 @@ class StationInfoControllerTest {
     public void findNurseInfoByStationId() throws Exception {
         mockMvc.perform(get("/station/1/nurses"))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$[0].sno", equalTo("21103")))
+                .andExpect(jsonPath("$[0].id", equalTo(1)))
                 .andExpect(jsonPath("$[0].name", equalTo("sion")))
                 .andExpect(jsonPath("$[0].joinTime", notNullValue()))
                 .andReturn();
@@ -163,7 +161,7 @@ class StationInfoControllerTest {
     public void deleteStation() throws Exception {
         mockMvc.perform(delete("/station/1"))
                 .andExpect(status().is(200))
-                .andExpect(content().string("success"))
+                .andExpect(jsonPath("$.message", equalTo("success")))
                 .andReturn();
     }
 
