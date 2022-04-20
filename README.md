@@ -16,6 +16,11 @@ mvn clean install # 成功跑完test後，build出jar檔
 docker-compose up -d
 ```
 
+spring framework版本
+![spring](./doc/springversion.png)
+hibernate 版本
+![hibernate](./doc/hibernateversion.png)
+
 > 在瀏覽器輸入`http://localhost:3000`,就能看到畫面
 ---
 ## 相關截圖
