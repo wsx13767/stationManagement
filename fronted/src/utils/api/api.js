@@ -1,6 +1,6 @@
 const api =  ({url, method, headers, data }, option = {}) => {
     console.log(url);
-    return fetch(`${process.env.REACT_APP_HOST_IP_ADDRESS}/${url}`, {
+    return fetch(`${process.env.REACT_APP_HOST_IP_ADDRESS}${url}`, {
         method: method || 'GET',
         body: data ? JSON.stringify(data) : null,
         headers: headers || {

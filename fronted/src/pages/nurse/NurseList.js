@@ -46,7 +46,7 @@ const NurseList = ()=> {
             <table>
                 <thead>
                     <tr>
-                        <th>員邊</th>
+                        <th>員編</th>
                         <th>修改時間</th>
                         <th>動作</th>
                     </tr>
