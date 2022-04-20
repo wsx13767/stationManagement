@@ -1,5 +1,6 @@
 package com.example.stationManagement.controller;
 
+import com.example.stationManagement.StationManagementApplication;
 import com.example.stationManagement.model.NurseInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.MethodOrderer;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
 @SpringBootTest
+@DirtiesContext
 class NurseInfoControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
@@ -42,10 +45,10 @@ class NurseInfoControllerTest {
     @Order(2)
     @Test
     public void getNurse() throws Exception {
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/nurse/21103");
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/nurse/666");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id", equalTo(21103)))
+                .andExpect(jsonPath("$.id", equalTo(666)))
                 .andExpect(jsonPath("$.name", equalTo("sion")))
                 .andReturn();
     }
@@ -84,9 +87,6 @@ class NurseInfoControllerTest {
         NurseInfo info = new NurseInfo();
         info.setId(999L);
         info.setName("test2");
-        Set<Long> set = new HashSet<>();
-        set.add(1L);
-        info.setStationIds(set);
         mockMvc.perform(post("/nurse")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(info)))
                 .andExpect(status().is(200))
@@ -134,7 +134,7 @@ class NurseInfoControllerTest {
     @Order(10)
     @Test
     public void deleteNurse() throws Exception {
-        mockMvc.perform(delete("/nurse/21103"))
+        mockMvc.perform(delete("/nurse/999"))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.message", equalTo("success")))
                 .andReturn();

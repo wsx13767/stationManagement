@@ -10,19 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import javax.sql.DataSource;
-
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
 @SpringBootTest
+@DirtiesContext
 class StationInfoControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
@@ -134,7 +136,7 @@ class StationInfoControllerTest {
     public void findNurseInfoByStationId() throws Exception {
         mockMvc.perform(get("/station/1/nurses"))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$[0].id", equalTo(1)))
+                .andExpect(jsonPath("$[0].id", equalTo(21103)))
                 .andExpect(jsonPath("$[0].name", equalTo("sion")))
                 .andExpect(jsonPath("$[0].joinTime", notNullValue()))
                 .andReturn();
