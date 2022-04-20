@@ -2,8 +2,8 @@ package com.example.stationManagement.controller;
 
 import com.example.stationManagement.database.entity.Nurse;
 import com.example.stationManagement.database.entity.Station;
+import com.example.stationManagement.model.CommonResult;
 import com.example.stationManagement.model.NurseInfo;
-import com.example.stationManagement.model.StationInfo;
 import com.example.stationManagement.model.StationInfoOfNurse;
 import com.example.stationManagement.service.NurseService;
 import com.example.stationManagement.service.StationService;
@@ -51,9 +51,9 @@ public class NurseInfoController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteNurse(@PathVariable @Min(0) Long id) {
+    public CommonResult deleteNurse(@PathVariable @Min(0) Long id) {
         nurseService.deleteNurseAndMapping(id);
-        return "success";
+        return new CommonResult("success");
     }
 
     @PutMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.example.stationManagement.exception;
 
+import com.example.stationManagement.model.CommonResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -10,39 +11,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CustomExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Error> exception(Exception ex) {
-        return ResponseEntity.internalServerError().body(new Error(ex.getMessage()));
+    public ResponseEntity<CommonResult> exception(Exception ex) {
+        return ResponseEntity.internalServerError().body(new CommonResult(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Error> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<CommonResult> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();
         StringBuilder sb = new StringBuilder();
         for (FieldError error : result.getFieldErrors()) {
             sb.append(error.getDefaultMessage()).append(";");
         }
-        return ResponseEntity.badRequest().body(new Error(sb.toString()));
+        return ResponseEntity.badRequest().body(new CommonResult(sb.toString()));
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Error> runtimeException(RuntimeException ex) {
-        return ResponseEntity.badRequest().body(new Error(ex.getMessage()));
+    public ResponseEntity<CommonResult> runtimeException(RuntimeException ex) {
+        return ResponseEntity.badRequest().body(new CommonResult(ex.getMessage()));
     }
 
-
-    class Error {
-        private String error;
-
-        public Error(String error) {
-            this.error = error;
-        }
-
-        public String getError() {
-            return error;
-        }
-
-        public void setError(String error) {
-            this.error = error;
-        }
-    }
 }
