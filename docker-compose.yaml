@@ -1,0 +1,35 @@
+services:
+  mysql-db:
+    image: mysql:8.0.23
+    container_name: mysql-db
+    restart: unless-stopped
+    platform: linux/amd64
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: siang
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      LANG: C.UTF-8
+    volumes:
+      - ./data:/docker-entrypoint-initdb.d
+  station-management:
+    build:
+      context: ./
+    ports:
+      - 8080:8080
+    container_name: station-management
+    restart: unless-stopped
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/mysqldb?serverTimezone=Asia/Taipei&characterEncoding=utf-8
+    depends_on:
+      - mysql-db
+  fronted:
+    build:
+      context: ./fronted
+    environment:
+      - REACT_APP_HOST_IP_ADDRESS=http://${HOST_IP_ADDRESS}:8080
+    ports:
+      - 3000:3000
+    container_name: fronted
+    restart: unless-stopped
